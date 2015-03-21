@@ -28,10 +28,10 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
     private static final String disabled = "Provider Disabled";
     private static final String enabled = "Provider enabled";
     LocationManager mLocationManager = null;
-    private final SensorManager mSensorManager;
-    private final Sensor mAccelerometer;
-    private static final float [] mData=null;
-    private static final float [] gData = null;
+    private SensorManager mSensorManager;
+    private Sensor mAccelerometer;
+    private static final float [] mData= new float[3];
+    private static final float [] gData = new float[3];
     private static final float [] R = null;
     private static final float [] Imat = null;
     private static final float [] orientation = null;
@@ -39,9 +39,17 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
     private static final String TAG = "TAG";
     private static final double DEG = 180/Math.PI;
 
-    public MainActivity(SensorManager mSensorManager) {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        //setContentView(R.layout.activity_main);
+        Log.d(TAG,"Enters on Create()");
         this.mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
         this.mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, LOCATION_REFRESH_TIME,
+                LOCATION_REFRESH_DISTANCE, mLocationListener);
     }
     protected void onResume() {
         super.onResume();
@@ -88,17 +96,6 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
 
     }
 
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-       // setContentView(R.layout.activity_main);
-
-
-        mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, LOCATION_REFRESH_TIME,
-                LOCATION_REFRESH_DISTANCE, mLocationListener);
-    }
 
     private final LocationListener mLocationListener = new LocationListener() {
         @Override
