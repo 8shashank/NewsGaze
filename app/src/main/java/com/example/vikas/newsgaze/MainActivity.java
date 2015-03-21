@@ -30,11 +30,15 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
     LocationManager mLocationManager = null;
     private SensorManager mSensorManager;
     private Sensor mAccelerometer;
+
+    private Sensor mMagneticField;
+
     private static final float [] mData= new float[3];
     private static final float [] gData = new float[3];
-    private static final float [] R = null;
-    private static final float [] Imat = null;
-    private static final float [] orientation = null;
+    private static final float [] R = new float[16];
+    public static final float [] outR= new float[16];                //output Rotational Matrix
+    private static final float [] Imat = new float [16];
+    private static final float [] orientation = new float[3];
     private static boolean haveData = false;
     private static final String TAG = "TAG";
     private static final double DEG = 180/Math.PI;
@@ -47,6 +51,11 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
         Log.d(TAG,"Enters on Create()");
         this.mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
         this.mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        this.mMagneticField = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+
+        mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+        mSensorManager.registerListener(this, mMagneticField, SensorManager.SENSOR_DELAY_NORMAL);
+
         mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, LOCATION_REFRESH_TIME,
                 LOCATION_REFRESH_DISTANCE, mLocationListener);
@@ -54,6 +63,7 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
     protected void onResume() {
         super.onResume();
         mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+        mSensorManager.registerListener(this, mMagneticField, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     protected void onPause() {
@@ -69,6 +79,7 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
                 gData[0] = event.values[0];
                 gData[1] = event.values[1];
                 gData[2] = event.values[2];
+                haveData=true;
                 break;
             case Sensor.TYPE_MAGNETIC_FIELD:
                 mData[0] = event.values[0];
@@ -80,13 +91,19 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
 
         if( haveData ) {
 
+
             SensorManager.getRotationMatrix(R, Imat, gData, mData);
-            getOrientation(R, orientation);
+
+            Log.d(TAG, "R=" + (int) (R[0]));
+
+            SensorManager.remapCoordinateSystem(R, SensorManager.AXIS_X, SensorManager.AXIS_Z, outR );
+            SensorManager.getOrientation(outR, orientation);
 
 
             Log.d(TAG, "yaw: " + (int)(orientation[0]*DEG));
             Log.d(TAG, "pitch: " + (int)(orientation[1]*DEG));
             Log.d(TAG, "roll: " + (int)(orientation[2]*DEG));
+            haveData=false;
 
         }
     }
@@ -95,6 +112,7 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
     }
+
 
 
     private final LocationListener mLocationListener = new LocationListener() {
