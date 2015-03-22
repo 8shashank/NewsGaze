@@ -1,5 +1,6 @@
 package com.shashank_sharma.newsgaze2;
 
+import android.os.CountDownTimer;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -38,6 +39,7 @@ public class Gaze extends ActionBarActivity implements SensorEventListener {
     private SensorManager mSensorManager;
     private Sensor mAccelerometer;
 
+
     private Sensor mMagneticField;
 
     private static float [] mData= new float[3];
@@ -49,7 +51,9 @@ public class Gaze extends ActionBarActivity implements SensorEventListener {
     private static boolean haveData = false;
     private static final String TAG = "TAG";
     private static final double DEG = 180/Math.PI;
-    static final float ALPHA = 0.7f;
+    static final float ALPHA = 1;
+    private static final int realdelay = 40000000;
+    private static float currentDir=0;
 
 
     @Override
@@ -60,9 +64,8 @@ public class Gaze extends ActionBarActivity implements SensorEventListener {
         this.mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
         this.mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         this.mMagneticField = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
-
-        mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
-        mSensorManager.registerListener(this, mMagneticField, SensorManager.SENSOR_DELAY_NORMAL);
+        mSensorManager.registerListener(this, mAccelerometer, realdelay);
+        mSensorManager.registerListener(this, mMagneticField, realdelay);
 
         mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, LOCATION_REFRESH_TIME,
@@ -70,8 +73,8 @@ public class Gaze extends ActionBarActivity implements SensorEventListener {
     }
     protected void onResume() {
         super.onResume();
-        mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
-        mSensorManager.registerListener(this, mMagneticField, SensorManager.SENSOR_DELAY_NORMAL);
+        mSensorManager.registerListener(this, mAccelerometer, realdelay);
+        mSensorManager.registerListener(this, mMagneticField, realdelay);
     }
 
     protected void onPause() {
@@ -80,7 +83,6 @@ public class Gaze extends ActionBarActivity implements SensorEventListener {
     }
     @Override
     public void onSensorChanged(SensorEvent event) {
-
         if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
             gData = lowPass(event.values.clone(), gData);
         } else if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
@@ -89,7 +91,7 @@ public class Gaze extends ActionBarActivity implements SensorEventListener {
         if (gData != null && mData != null) {
             SensorManager.getRotationMatrix(R, Imat, gData, mData);
             Display display =
-                    ((WindowManager)getSystemService(getApplicationContext().WINDOW_SERVICE)).getDefaultDisplay();
+                    ((WindowManager) getSystemService(getApplicationContext().WINDOW_SERVICE)).getDefaultDisplay();
             int rotation = display.getRotation();
             if (rotation == 1) {
                 SensorManager.remapCoordinateSystem(R, SensorManager.AXIS_X, SensorManager.AXIS_MINUS_Z, outR);
@@ -97,18 +99,15 @@ public class Gaze extends ActionBarActivity implements SensorEventListener {
                 SensorManager.remapCoordinateSystem(R, SensorManager.AXIS_Y, SensorManager.AXIS_MINUS_Z, outR);
             }
             SensorManager.getOrientation(R, orientation);
-            float azimuth = (float)(((orientation[0]*180)/Math.PI)+180);
-            float pitch = (float)(((orientation[1]*180/Math.PI))+90);
-            float roll = (float)(((orientation[2]*180/Math.PI)));
+            float azimuth = (float) (((orientation[0] * 180) / Math.PI) + 180);
+            float pitch = (float) (((orientation[1] * 180 / Math.PI)) + 90);
+            float roll = (float) (((orientation[2] * 180 / Math.PI)));
 
 
             Log.d(TAG, "yaw: " + azimuth);
             Log.d(TAG, "pitch: " + pitch);
             Log.d(TAG, "roll: " + roll);
-
         }
-
-
     }
 
     @Override

@@ -38,7 +38,7 @@
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:id="@+id/imageButton"
-        android:onClick="openGaze"
+        android:onClick="openGaze()"
         android:layout_gravity="bottom|center_horizontal"
         android:layout_weight="0.16"
         android:layout_centerHorizontal="true"

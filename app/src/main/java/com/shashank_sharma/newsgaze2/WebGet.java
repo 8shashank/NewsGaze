@@ -7,7 +7,7 @@ import java.io.*;
 import java.net.*;
 
 public class WebGet {
-        public String getHTML(String urlToRead) {
+        public static String getHTML(String urlToRead) {
             URL url;
             HttpURLConnection conn;
             BufferedReader rd;

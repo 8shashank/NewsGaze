@@ -3,8 +3,13 @@
     android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="com.shashank_sharma.newsgaze2.Gaze">
+    android:paddingBottom="@dimen/activity_vertical_margin">
+
+    <TextView
+    android:layout_height="match_parent"
+    android:layout_width= "wrap_content"
+        />
+
 
     <LinearLayout
         android:orientation="vertical"
@@ -32,16 +37,6 @@
 
     </LinearLayout>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/textView3"
-        android:layout_gravity="center_horizontal"
-        android:layout_alignParentTop="true"
-        android:layout_alignRight="@+id/linearLayout2"
-        android:layout_alignEnd="@+id/linearLayout2"
-        android:layout_marginRight="130dp"
-        android:layout_marginEnd="130dp"
-        android:text="City Data" />
+
 
 </RelativeLayout>
