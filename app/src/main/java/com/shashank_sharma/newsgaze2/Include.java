@@ -1,4 +1,4 @@
-package com.example.vikas.newsgaze;
+package com.shashank_sharma.newsgaze2;
 
 /**
  * Created by Shank on 3/22/2015.

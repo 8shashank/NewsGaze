@@ -1,4 +1,4 @@
-package com.example.vikas.newsgaze;
+package com.shashank_sharma.newsgaze2;
 
 /**
  * Created by Shank on 3/22/2015.
@@ -18,12 +18,16 @@ public class City implements Comparable<City>{
         }
     }
 
-    public City(String city,double dist){
+    public City(String city,double dist,double lat,double lon){
         this.city=city;
         this.dist=dist;
+        this.lat=lat;
+        this.lon=lon;
     }
 
     public String city;
     public double dist;
+    public double lat;
+    public double lon;
 }
 

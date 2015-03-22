@@ -1,11 +1,50 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".MainActivity">
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
 
     <TextView android:text="@string/hello_world" android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@drawable/Oklahoma"
+        android:layout_alignParentTop="true"
+        android:weightSum="1"
+        android:id="@+id/linearLayout">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:text="Explore Now"
+            android:gravity="center"
+            android:id="@+id/textView"
+            android:textSize="40dp"
+            android:visibility="visible"
+            android:textColor="#ff404040" />
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="80dp"
+            android:layout_gravity="center_horizontal"
+            android:background="#00000000"></LinearLayout>
+
+    </LinearLayout>
+
+    <ImageButton
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:id="@+id/imageButton"
+        android:onClick="openGaze"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_weight="0.16"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:clickable="true"
+        android:src="@drawable/ic_action_forward"
+        android:background="#00000000" />
 
 </RelativeLayout>
