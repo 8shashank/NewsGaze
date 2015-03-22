@@ -40,16 +40,16 @@ public class Gaze extends ActionBarActivity implements SensorEventListener {
 
     private Sensor mMagneticField;
 
-    private static final float [] mData= new float[3];
+    private static float [] mData= new float[3];
     private static float [] gData = new float[3];
-    private static final float [] R = new float[16];
-    public static final float [] outR= new float[16];                //output Rotational Matrix
-    private static final float [] Imat = new float [16];
+    private static final float [] R = new float[36];
+    public static final float [] outR= new float[36];                //output Rotational Matrix
+    private static final float [] Imat = new float [36];
     private static final float [] orientation = new float[3];
     private static boolean haveData = false;
     private static final String TAG = "TAG";
     private static final double DEG = 180/Math.PI;
-    static final float ALPHA = 0.25f;
+    static final float ALPHA = 0.7f;
 
 
     @Override
@@ -80,40 +80,31 @@ public class Gaze extends ActionBarActivity implements SensorEventListener {
     }
     @Override
     public void onSensorChanged(SensorEvent event) {
-        long now = event.timestamp;     // ns
 
-        switch( event.sensor.getType() ) {
-            case Sensor.TYPE_ACCELEROMETER:
-                gData[0] = event.values[0];
-                gData[1] = event.values[1];
-                gData[2] = event.values[2];
-                haveData=true;
-                break;
-            case Sensor.TYPE_MAGNETIC_FIELD:
-                mData[0] = event.values[0];
-                mData[1] = event.values[1];
-                mData[2] = event.values[2];
-                haveData = true;
-                break;
+        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+            gData = lowPass(event.values.clone(), gData);
+        } else if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
+            mData = lowPass(event.values.clone(), mData);
         }
-
-        if( haveData ) {
+        if (gData != null && mData != null) {
             SensorManager.getRotationMatrix(R, Imat, gData, mData);
-
-            Log.d(TAG, "R=" + (int) (R[0]));
             Display display =
                     ((WindowManager)getSystemService(getApplicationContext().WINDOW_SERVICE)).getDefaultDisplay();
-            SensorManager.remapCoordinateSystem(R, SensorManager.AXIS_X, SensorManager.AXIS_Z, outR );
-            SensorManager.getOrientation(outR, orientation);
-            int mHeading = (int) Math.toDegrees(orientation[0]);
-            int compensation = display.getRotation() * 90;
-            mHeading = mHeading+compensation;
+            int rotation = display.getRotation();
+            if (rotation == 1) {
+                SensorManager.remapCoordinateSystem(R, SensorManager.AXIS_X, SensorManager.AXIS_MINUS_Z, outR);
+            } else {
+                SensorManager.remapCoordinateSystem(R, SensorManager.AXIS_Y, SensorManager.AXIS_MINUS_Z, outR);
+            }
+            SensorManager.getOrientation(R, orientation);
+            float azimuth = (float)(((orientation[0]*180)/Math.PI)+180);
+            float pitch = (float)(((orientation[1]*180/Math.PI))+90);
+            float roll = (float)(((orientation[2]*180/Math.PI)));
 
 
-            Log.d(TAG, "yaw: " + mHeading);
-            Log.d(TAG, "pitch: " + (int)(orientation[1]*DEG));
-            Log.d(TAG, "roll: " + (int)(orientation[2]*DEG));
-            haveData=false;
+            Log.d(TAG, "yaw: " + azimuth);
+            Log.d(TAG, "pitch: " + pitch);
+            Log.d(TAG, "roll: " + roll);
 
         }
 
