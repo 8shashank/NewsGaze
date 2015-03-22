@@ -1,9 +1,24 @@
 package com.shashank_sharma.newsgaze2;
 
+import java.util.Arrays;
+
 /**
  * Created by Shank on 3/22/2015.
  */
 public class Include{
+
+    public static City[] cities=new City[63];
+
+    public static void arraySort(double longitude,double latitude){
+        for(int i=0;i<cities.length;i++)
+        {
+            double dist=Math.pow((longitude-Include.city_coordinates[i][0]),2)+
+                    Math.pow(((latitude-Include.city_coordinates[i][1])),2);
+            cities[i]=new City(Include.city_names[i],dist,Include.city_coordinates[i][0],
+                    Include.city_coordinates[i][1]);
+        }
+        Arrays.sort(cities);
+    }
 
     public static String[] city_names=
             {"Albuquerque, New Mexico",

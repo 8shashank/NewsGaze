@@ -1,6 +1,6 @@
 package com.shashank_sharma.newsgaze2;
 
-        import android.content.Intent;
+import android.content.Intent;
         import android.location.Location;
         import android.location.LocationManager;
         import android.support.v7.app.ActionBarActivity;
@@ -33,18 +33,7 @@ public class MainActivity extends ActionBarActivity {
 
     public void openGaze() {
         Intent intent = new Intent(this, Gaze.class);
-
-        City[] cities=new City[63];
-        for(int i=0;i<cities.length;i++)
-        {
-            double dist=Math.pow((longitude-Include.city_coordinates[i][0]),2)+
-                Math.pow(((latitude-Include.city_coordinates[i][1])),2);
-            cities[i]=new City(Include.city_names[i],dist,Include.city_coordinates[i][0],
-                    Include.city_coordinates[i][1]);
-        }
-        Arrays.sort(cities);
-        double latlong[]={longitude,latitude};
-        intent.putExtra("latlong",latlong);
+        Include.arraySort(longitude,latitude);
         startActivity(intent);
     }
 
